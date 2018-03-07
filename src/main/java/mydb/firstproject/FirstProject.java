@@ -15,7 +15,6 @@ import com.arangodb.model.AqlQueryOptions;
 import com.arangodb.util.MapBuilder;
 import com.arangodb.velocypack.VPackSlice;
 import com.arangodb.velocypack.exception.VPackException;
-import com.sun.xml.internal.rngom.parse.host.Base;
 
 public class FirstProject {
     public static void main(String[] args) {
