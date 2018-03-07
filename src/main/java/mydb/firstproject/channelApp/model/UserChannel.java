@@ -20,10 +20,11 @@ public class UserChannel {
         final String dbName = "mydb";
         final String channelsCollection = "Channels";
         JSONObject channelObject = new JSONObject();
+        System.out.println("Getting Channel by id: " + id);
         try{
             System.out.println("Starting fetching a channel from query with id " + id);
             String query = "FOR t IN " + channelsCollection + " FILTER t.channel_id == @id  RETURN t";
-            Map<String, Object> bindVars = new MapBuilder().put("id", 10).get();
+            Map<String, Object> bindVars = new MapBuilder().put("id", id).get();
             ArangoCursor<BaseDocument> cursor = arangoDB.db(dbName).query(query, bindVars, null,
                     BaseDocument.class);
             cursor.forEachRemaining(aDocument -> {

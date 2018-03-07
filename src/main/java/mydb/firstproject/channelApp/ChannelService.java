@@ -19,7 +19,7 @@ import java.util.concurrent.TimeoutException;
 
 public class ChannelService {
 
-    private static final String RPC_QUEUE_NAME = "user-request";
+    private static final String RPC_QUEUE_NAME = "channel-request";
 
     public static void main(String [] argv) {
 
