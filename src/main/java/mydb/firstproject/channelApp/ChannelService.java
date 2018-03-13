@@ -1,6 +1,7 @@
 package mydb.firstproject.channelApp;
 
 import mydb.firstproject.channelApp.commands.Command;
+import mydb.firstproject.channelApp.commands.delete.DeleteChannel;
 import mydb.firstproject.channelApp.commands.get.GetChannel;
 
 import com.rabbitmq.client.ConnectionFactory;
@@ -10,6 +11,9 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Envelope;
+import mydb.firstproject.channelApp.commands.post.PostChannel;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -49,10 +53,16 @@ public class ChannelService {
                     System.out.println("Responding to corrID: "+ properties.getCorrelationId());
 
                     String response = "";
-
+                    String type = "";
                     try {
                         String message = new String(body, "UTF-8");
-                        Command cmd = new GetChannel();
+                        for (String m: message.split(",")){
+                            if(m.contains("type")){
+                                type = m.split(":")[1];
+                                System.out.println("Type fetched : " + type);
+                            }
+                        }
+
                         HashMap<String, Object> props = new HashMap<String, Object>();
                         props.put("channel", channel);
                         props.put("properties", properties);
@@ -60,8 +70,20 @@ public class ChannelService {
                         props.put("envelope", envelope);
                         props.put("body", message);
 
-                        cmd.init(props);
-                        executor.submit(cmd);
+                        if(type.equals("\"GET\"")){
+                            Command cmd = new GetChannel();
+                            cmd.init(props);
+                            executor.submit(cmd);
+                        } else if(type.equals("\"POST\"")){
+                            Command cmd = new PostChannel();
+                            cmd.init(props);
+                            executor.submit(cmd);
+                        } else if(type.equals("\"DELETE\"")){
+                            Command cmd = new DeleteChannel();
+                            cmd.init(props);
+                            executor.submit(cmd);
+                        }
+
                     } catch (RuntimeException e) {
                         System.out.println(" [.] " + e.toString());
                     } finally {
